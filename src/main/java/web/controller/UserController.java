@@ -1,13 +1,12 @@
 package web.controller;
 
-import web.dao.UserDao;
-import web.exception.UserNotFoundException;
 import web.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import web.service.UserService;
 
 import java.util.Optional;
 
@@ -15,11 +14,11 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserDao userDao;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserDao userDao) {
-        this.userDao = userDao;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/new")
@@ -30,23 +29,20 @@ public class UserController {
 
     @GetMapping
     public String listUsers(Model model) {
-        model.addAttribute("users", userDao.findAll());
+        model.addAttribute("users", userService.findAll());
         return "users/list";
     }
 
     @PostMapping
     public String createUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
-        userDao.save(user);
+        userService.save(user);
         redirectAttributes.addFlashAttribute("successMessage", "User created successfully!");
         return "redirect:/users";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        Optional<User> user = userDao.findById(id);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User not found with ID: " + id);
-        }
+        Optional<User> user = userService.findById(id);
         model.addAttribute("user", user);
         return "users/form";
     }
@@ -54,14 +50,14 @@ public class UserController {
     @PostMapping("/update/{id}")
     public String updateUser(@PathVariable Long id, @ModelAttribute User user, RedirectAttributes redirectAttributes) {
         user.setId(id); // Ensure ID is set
-        userDao.update(user);
+        userService.update(user);
         redirectAttributes.addFlashAttribute("successMessage", "User updated successfully!");
         return "redirect:/users";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        userDao.delete(id);
+        userService.delete(id);
         redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully!");
         return "redirect:/users";
     }

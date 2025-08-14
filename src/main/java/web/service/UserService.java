@@ -1,21 +1,15 @@
 package web.service;
 
+import org.springframework.stereotype.Service;
 import web.model.User;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public interface UserService {
-    // Read operations
-    List<User> getAllUsers();
-    Optional<Optional<User>> getUserById(Long id);
-    boolean existsById(Long id);
-
-    // Write operations
-    User createUser(User user);      // For new user creation
-    User saveUser(User user);        // Generic save (create or update)
-    User updateUser(Long id, User user);  // Specific update operation
-    void deleteUser(Long id);
-
-    // Additional common methods
-    boolean existsByEmail(String email);  // Very useful for registration
+    List<User> findAll();
+    Optional<User> findById(Long id);
+    void save(User user);
+    void update(User user);
+    void delete(Long id);
 }

@@ -1,62 +1,34 @@
 package web.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import web.model.User;
-import web.dao.UserDao;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
 
-    @Autowired
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
+    @Override
+    public List<User> findAll() {
+        return List.of();
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userDao.findAll();
+    public Optional<User> findById(Long id) {
+        return Optional.empty();
     }
 
     @Override
-    public Optional<Optional<User>> getUserById(Long id) {
-        return Optional.ofNullable(userDao.findById(id));
+    public void save(User user) {
     }
 
     @Override
-    public User saveUser(User user) {
-        return null;
+    public void update(User user) {
     }
 
     @Override
-    public User createUser(User user) {
-        // Additional business logic can go here
-        return userDao.save(user);
-    }
+    public void delete(Long id) {
 
-    @Override
-    public User updateUser(Long id, User user) {
-        user.setId(id); // Ensure ID is set
-        return userDao.update(user);
-    }
-
-    @Override
-    public void deleteUser(Long id) {
-        userDao.delete(id);
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return false;
-    }
-
-    @Override
-    public boolean existsById(Long id) {
-        return false;
     }
 }
