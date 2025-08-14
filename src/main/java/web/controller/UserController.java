@@ -1,54 +1,68 @@
 package web.controller;
 
+import web.dao.UserDao;
+import web.exception.UserNotFoundException;
+import web.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import web.entity.User;
-import web.service.UserService;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserDao userDao;
 
-    @GetMapping
-    public String listUsers(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "users";
+    @Autowired
+    public UserController(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("user", new User());
-        return "user-form";
+        return "users/form";
     }
 
-    @PostMapping("/save")
-    public String saveUser(@ModelAttribute("user") User user) {
-        if (user.getId() == null) {
-            userService.saveUser(user);
-        } else {
-            userService.updateUser(user);
-        }
+    @GetMapping
+    public String listUsers(Model model) {
+        model.addAttribute("users", userDao.findAll());
+        return "users/list";
+    }
+
+    @PostMapping
+    public String createUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
+        userDao.save(user);
+        redirectAttributes.addFlashAttribute("successMessage", "User created successfully!");
         return "redirect:/users";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userService.getUserById(id));
-        return "user-form";
+        Optional<User> user = userDao.findById(id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User not found with ID: " + id);
+        }
+        model.addAttribute("user", user);
+        return "users/form";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable Long id, @ModelAttribute User user, RedirectAttributes redirectAttributes) {
+        user.setId(id); // Ensure ID is set
+        userDao.update(user);
+        redirectAttributes.addFlashAttribute("successMessage", "User updated successfully!");
+        return "redirect:/users";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        userDao.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully!");
         return "redirect:/users";
     }
 }

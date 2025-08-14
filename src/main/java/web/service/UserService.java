@@ -1,36 +1,21 @@
 package web.service;
 
+import web.model.User;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import web.dao.UserDao;
-import web.entity.User;
+import java.util.Optional;
 
-@Service
-@Transactional
-public class UserService {
+public interface UserService {
+    // Read operations
+    List<User> getAllUsers();
+    Optional<Optional<User>> getUserById(Long id);
+    boolean existsById(Long id);
 
-    @Autowired
-    private UserDao userDao;
+    // Write operations
+    User createUser(User user);      // For new user creation
+    User saveUser(User user);        // Generic save (create or update)
+    User updateUser(Long id, User user);  // Specific update operation
+    void deleteUser(Long id);
 
-    public List<User> getAllUsers() {
-        return userDao.findAll();
-    }
-
-    public User getUserById(Long id) {
-        return userDao.findById(id);
-    }
-
-    public void saveUser(User user) {
-        userDao.save(user);
-    }
-
-    public void updateUser(User user) {
-        userDao.update(user);
-    }
-
-    public void deleteUser(Long id) {
-        userDao.delete(id);
-    }
+    // Additional common methods
+    boolean existsByEmail(String email);  // Very useful for registration
 }

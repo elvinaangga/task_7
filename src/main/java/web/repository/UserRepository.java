@@ -1,13 +1,13 @@
-package web.dao;
+package web.repository;
+
 
 import web.model.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserDao {
+public interface UserRepository {
     List<User> findAll();
     Optional<User> findById(Long id);
     User save(User user);
-    User update(User user);
-    void delete(Long id);
+    void deleteById(Long id);
 }
