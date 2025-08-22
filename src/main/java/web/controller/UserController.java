@@ -1,5 +1,7 @@
 package web.controller;
 
+
+import org.springframework.validation.BindingResult;
 import web.model.User;
 import web.service.UserService;
 
@@ -9,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 
 
 @Controller
@@ -50,11 +53,20 @@ public class UserController {
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
+    public String createUser(@Valid @ModelAttribute("user") User user,
+                             BindingResult result,
+                             RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            // ada error validasi → kembali ke form
+            return "users/form";
+        }
+
+        // tidak ada error → simpan user
         userService.save(user);
         redirectAttributes.addFlashAttribute("successMessage", "User saved successfully!");
         return "redirect:/users";
     }
+
 
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {

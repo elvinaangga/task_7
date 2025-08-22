@@ -1,6 +1,11 @@
 package web.model;
 
+
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 
 @Entity
 @Table(name = "users")
@@ -11,9 +16,13 @@ public class User {
     private Long id;
 
     @Column(name = "first_name", nullable = false)
+    @NotBlank(message = "First name is required")
+    @Pattern(regexp = "^[A-Za-z]+$", message = "First name must contain only letters")
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
+    @NotBlank(message = "Last name is required")
+    @Pattern(regexp = "^[A-Za-z]+$", message = "Last name must contain only letters")
     private String lastName;
 
     @Column(name = "email", nullable = false)
