@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findById(Long id) {
-        return Optional.empty();
+        return userDao.findById(id);
     }
 
     @Override
@@ -33,11 +33,11 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
     }
 
-    @Override
-    @Transactional
-    public void update(User user) {
-        userDao.update(user);
-    }
+//    @Override
+//    @Transactional
+//    public void update(User user) {
+//        userDao.update(user);
+//    }
 
     @Override
     @Transactional

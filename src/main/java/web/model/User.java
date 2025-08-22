@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
+@Access(AccessType.FIELD)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
