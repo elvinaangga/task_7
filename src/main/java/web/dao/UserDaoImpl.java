@@ -48,10 +48,10 @@ public class UserDaoImpl implements UserDao {
     }
 
 
-//    @Override
-//    @Transactional
-//    public void update(User user) {
-//        entityManager.merge(user);
-//    }
+    @Override
+    @Transactional
+    public void update(User user) {
+        entityManager.merge(user);
+    }
 
 }

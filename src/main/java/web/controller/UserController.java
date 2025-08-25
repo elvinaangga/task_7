@@ -37,19 +37,13 @@ public class UserController {
         return "users/list";
     }
 
-//    @PostMapping
-//    public String createUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
-//        userService.save(user);
-//        redirectAttributes.addFlashAttribute("successMessage", "User created successfully!");
-//        return "redirect:/users";
-//    }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         User user = userService.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + id));
         model.addAttribute("user", user);
-        return "users/form";
+        return "users/edit_form";
     }
 
     @PostMapping
@@ -66,6 +60,20 @@ public class UserController {
         redirectAttributes.addFlashAttribute("successMessage", "User saved successfully!");
         return "redirect:/users";
     }
+
+    @PostMapping("/update")
+    public String updateUser(@Valid @ModelAttribute("user") User user,
+                             BindingResult result,
+                             RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "users/edit_form"; // balik ke edit form kalau ada error
+        }
+
+        userService.update(user); // service update, jangan save lagi
+        redirectAttributes.addFlashAttribute("successMessage", "User updated successfully!");
+        return "redirect:/users";
+    }
+
 
 
     @GetMapping("/delete/{id}")
